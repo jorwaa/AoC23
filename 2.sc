@@ -18,17 +18,12 @@ def second(fn: String, ver: Int = 2): Int = {
 }
 
 @tailrec
-def checkLimits(l: List[String], value: Int): Int = {
+def checkLimits(l: List[String], value: Int, limits: Map[String, Int] = Map("blue" -> 14, "green" -> 13, "red" -> 12)): Int = {
   l match {
-    case num :: colour :: next => colour match {
-      case "red" => if (num.toInt > 12) 0 else checkLimits(next, value)
-      case "green" => if (num.toInt > 13) 0 else checkLimits(next, value)
-      case "blue" => if (num.toInt > 14) 0 else checkLimits(next, value)
-      case _ => 0 // Not implemented
-    }
     case Nil => value
-    case _ => 0 // Not implemented
-  }
+    case num :: colour :: next => if (num.toInt > limits(colour)) 0 else checkLimits(next, value)
+    case _ => throw new IllegalArgumentException("ugyldig \"farge\"")
+    }
 }
 
 @tailrec
@@ -36,8 +31,7 @@ def getHighestOfEach(l: List[String], highestOfEach: Map[String,Int] = Map(("blu
    l match {
     case Nil => highestOfEach.values.toList
     case num :: colour :: next => 
-      if (highestOfEach(colour) < num.toInt)
-       getHighestOfEach(next, highestOfEach.updated(colour, num.toInt))
+      if (highestOfEach(colour) < num.toInt) getHighestOfEach(next, highestOfEach.updated(colour, num.toInt))
       else getHighestOfEach(next, highestOfEach)
     case _ => List.empty // Not implemented
   }
